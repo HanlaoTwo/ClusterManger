@@ -1,0 +1,25 @@
+{
+  "kafka":{
+    "node0":{
+        "hosts":"hs01",
+        "path":"/opt/rt/kafka",
+        "port":"9203"
+         }
+  },
+
+  "zookeeper":{
+    "node0":{
+        "hosts":"hs01",
+        "path":"",
+        "port":""
+        }
+  },
+
+  "redis":{
+    "node0":{
+        "hosts":"hs01",
+        "path":"",
+        "port":""
+        }
+   }
+}

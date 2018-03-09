@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ClusterManage.iml" filepath="$PROJECT_DIR$/ClusterManage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Commands/Commands.iml" filepath="$PROJECT_DIR$/Commands/Commands.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Pages/Pages.iml" filepath="$PROJECT_DIR$/Pages/Pages.iml" />
+    </modules>
+  </component>
+</project>
