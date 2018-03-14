@@ -1,20 +1,6 @@
 import paramiko
 from CMD import Componet
 
-kafka = Componet.Componet(name='Kafka', path='/home', start='ls', stop='echo \'hello\'')
-
-
-
-
-kafkaPath = '/opt/rt/kafka'
-kafkaStart = '/bin/kafka-server-start.sh -daemon '
-kafkaConfig = '/config/server.properties'
-kafkaStop = '/bin/kafka-server-stop.sh'
-
-jstormPath = '/opt/rt/jstorm'
-jstormStart = '/bin/start.sh'
-jstormStop = '/bin/stop.sh'
-
 zookeeperPath = ''
 zookeeperStart = ''
 
@@ -22,39 +8,147 @@ redisPath = ''
 redisStart = ''
 redisStop = ''
 
-cluster = ['hs01','hs02','hs03']
+vps = '192.168.207.139'
+
+cluster = [vps]
 userName = 'root'
-password = 'hello123!'
+password = '000000'
 
-def stopCluster():
-    for node in cluster:
-        s = paramiko.SSHClient()
-        s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        s.connect(hostname=node, username=userName, password=password)
 
-        stdin, stdout, stderr = s.exec_command(kafkaPath+kafkaStop)
-        print(stdout.read(),'\n',stderr.read(),'\n')
+class MyCmd:
+    def pre_cmd(self, orign_cmd):
+        return 'bash -lc \'' + orign_cmd + '\''
 
-        stdin, stdout, stderr = s.exec_command(jstormPath+jstormStop)
-        print(stdout.read(),'\n',stderr.read(),'\n')
 
-        s.close
+class Kafka(MyCmd):
+    def __init__(self, path='', start='', stop='', config=''):
 
-def startCluster():
-    for node in cluster:
-        s = paramiko.SSHClient()
-        s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        s.connect(hostname=node, username=userName, password=password)
+        self.name = 'kafka'
+        if len(path) == 0:
+            self.path = '/opt/kafka/kafka_2.10-0.8.1.1'
+        else:
+            self.path = path
+        if len(stop) == 0:
+            self.stop = '/bin/kafka-server-stop.sh'
+        else:
+            self.stop = stop
+        if len(start) == 0:
+            self.start = '/bin/kafka-server-start.sh -daemon '
+        else:
+            self.start = start
+        if len(config) == 0:
+            self.config = '/config/server.properties'
+        else:
+            self.config = config
 
-        print(node,' ：',kafkaPath+kafkaStart+kafkaPath+kafkaConfig)
-        stdin, stdout, stderr = s.exec_command(kafkaPath+kafkaStart+kafkaPath+kafkaConfig)
-        print(stdout.read(),'\n',stderr.read(),'\n')
+    def getcmd(self, action):
+        mycmd = ''
+        if action == 'stop':
+            mycmd = self.path + self.stop
+        elif action == 'start':
+            mycmd = self.path + self.start + self.path + self.config
+        else:
+            mycmd = 'echo $PATH'
 
-        stdin, stdout, stderr = s.exec_command(jstormPath+jstormStart)
-        print(node,' ：',jstormPath+jstormStart)
-        print(str(stdout.read()),'\n')
+        mycmd = self.pre_cmd(mycmd)
+        print('执行命令：', mycmd)
+        return mycmd
 
-        s.close
 
-#stopCluster()
-startCluster()
+class Jstorm(MyCmd):
+    def __init__(self, path='', start='', stop=''):
+
+        self.name = 'Jstrom'
+        if len(path) == 0:
+            self.path = '/opt/rt/jstorm'
+        else:
+            self.path = path
+        if len(stop) == 0:
+            self.stop = '/bin/stop.sh'
+        else:
+            self.stop = stop
+        if len(start) == 0:
+            self.start = '/bin/start.sh'
+        else:
+            self.start = start
+
+    def getcmd(self, action):
+        mycmd = ''
+        if action == 'stop':
+            mycmd = self.path + self.stop
+        elif action == 'start':
+            mycmd = self.path + self.start
+        else:
+            mycmd = 'echo $PATH'
+
+        mycmd = self.pre_cmd(mycmd)
+        print('执行命令：', mycmd)
+        return mycmd
+
+
+class Cluster():
+    def __init__(self, components, masters):
+        self.components = components
+        self.masters = masters
+
+    def stop(self):
+        for component in self.components:
+            print('\n***************\n停止')
+            stdin, stdout, stderr = component.master.getSSHClient().exec_command(component.getcmd(action='stop'))
+            print('-------------\n执行结果：', stdout.read().decode('utf-8'), '-------------\n', '报错信息：',
+                  stderr.read().decode('utf-8'))
+
+
+    def start(self):
+        for component in self.components:
+            print('\n***************\n启动')
+            stdin, stdout, stderr = component.master.getSSHClient().exec_command(component.getcmd(action='start'))
+            print('-------------\n执行结果：', stdout.read().decode('utf-8'), '-------------\n', '报错信息：',
+                  stderr.read().decode('utf-8'))
+
+    def restart(self):
+        self.stop()
+        self.start()
+
+
+class Master:
+    def __init__(self, host, username, passw):
+        self.host = host
+        self.username = username
+        self.passw = passw
+
+    def getSSHClient(self):
+        self.client = paramiko.SSHClient()
+        self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self.client.connect(hostname=self.host, username=self.username, password=self.passw)
+        return self.client
+
+    def __del__(self):
+        self.client.close()
+
+
+class Componet(MyCmd):
+    def __init__(self, name, stop, start, master):
+        self.name = name
+        self.stop = stop
+        self.start = start
+        self.master = master
+
+    def getcmd(self, action):
+        if action == 'stop':
+            mycmd = self.stop
+        elif action == 'start':
+            mycmd = self.start
+        else:
+            mycmd = 'echo $PATH'
+        mycmd = self.pre_cmd(mycmd)
+        print('执行命令：', mycmd)
+        return mycmd
+
+
+master0 = Master(host=cluster[0], username=userName, passw=password)
+components0 = Componet(name='test', start='echo \'start\'', stop='echo \'stop\'',master=master0)
+
+MyCluster = Cluster(components=[components0], masters=[master0])
+# MyCluster.stop(client=myMuster.getSSHClient())
+MyCluster.restart()
