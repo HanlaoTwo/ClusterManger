@@ -1,0 +1,23 @@
+{
+  "kafka": {
+    "start": "ls",
+    "stop": "pwd",
+    "config": "",
+    "path":"",
+    "masters": {
+      "node0": {
+        "addr": "192.168.207.139",
+        "username": "root",
+        "passw": "000000",
+        "path": "/opt/rt/kafka"
+      }
+    }
+  },
+  "jstrom": {
+    "node0": {
+      "hosts": "192.168.207.139",
+      "path": "",
+      "port": ""
+    }
+  }
+}
