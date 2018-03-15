@@ -149,7 +149,6 @@ with open('../../config/config.json', 'r') as f:
 
 kafkaconfig = data.get('kafka')
 kafkamasters = []
-
 for k, node in kafkaconfig.get('masters').items():
     kafkamasters.append(Master(host=node.get('addr'), username=node.get('username'), passw=node.get('passw')))
 
@@ -161,6 +160,5 @@ MyCluster = Cluster(components=[kafkaCluster])
 
 master0 = Master(host=cluster[0], username=userName, passw=password)
 component0 = Componet(name='test', start='ls', stop='pwd', masters=[master0])
-TestCluester = Cluster(components=[component0])
+TestCluester = Cluster(components=[component0,kafkaCluster])
 TestCluester.restart()
-# print(kafkaconfig.get('node0'))
