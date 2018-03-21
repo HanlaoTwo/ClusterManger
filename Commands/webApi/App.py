@@ -1,5 +1,5 @@
 from flask import Flask,request,url_for
-from CMD import Mange
+
 
 app = Flask(__name__)
 
@@ -22,7 +22,16 @@ def query_user():
 
 @app.route('/query_url')
 def query_url():
-    return 'query url:'+url_for('query_user')
+    return 'query url:'+url_for('query_user')\
+
+from CMD import GetComponets
+
+@app.route('/getComps')
+def get_comps():
+    data =  GetComponets.getComp()
+    res = app.make_response(data)
+    res.headers['Access-Control-Allow-Origin'] = '*'
+    return res
 
 if __name__ == '__main__':
     app.run()

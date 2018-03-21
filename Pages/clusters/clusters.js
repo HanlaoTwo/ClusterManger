@@ -1,4 +1,5 @@
 // bootstrap the demo
+var baseUrl = "http://127.0.0.1:5000";
 var demo = new Vue({
     el: '#demo',
     created: function () {
@@ -18,12 +19,12 @@ var demo = new Vue({
             ins = this;
             return $.ajax({
                 type: 'get',
-                url: '/hello',
+                url: baseUrl+'/getComps',
                 data: {},
-                cache: false,
-                dataType: 'json',
+                //cache: false,
+                //dataType: 'json',
                 success: function (data) {
-                    gridData = data
+                    console.log(data)
                 },
                 error: function () {
                     ins.gridData = [{host: 'hs02', state: "active"}]
