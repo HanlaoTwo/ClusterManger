@@ -6,7 +6,8 @@ var demo = new Vue({
         //this.getClusters()
     },
     data: {
-        clusters: [
+        clusters:["1","2"],
+        clusters0: [
             {
                 name: "kafka",
                 host_stata: [
@@ -40,15 +41,23 @@ var demo = new Vue({
                 data: {},
                 success: function (data) {
                     console.log(data);
-                    this.clusters = data
+                    ins.clusters = setClusters(data);
+                    console.log(ins.clusters)
                 },
                 error: function () {
-                    ins.gridData = [{host: 'hs02', state: "active"}]
+                    //do something
                 }
             });
-        },
-        change: function () {
-            this.gridData = [{host: 'hahahahah', state: "active"}]
         }
+
     }
+
 });
+function setClusters (data) {
+    var clusters = JSON.parse(data);
+    var names =[];
+    for(name in clusters) {
+        names.push(name);
+    }
+    return names;
+}

@@ -21,7 +21,7 @@
 <script type="text/x-template" id="cluster-template">
     <div>
         <div class="card-header">
-            <h4 class="my-0 font-weight-normal"> {{ ci.name }} </h4>
+            <h4 class="my-0 font-weight-normal"> {{ ci }} </h4>
             <button type="button" class="btn btn-default btn-xs" @click="fresh()">刷新状态</button>
         </div>
         <div class="card-body">
@@ -66,7 +66,6 @@
         <div class="card mb-4 box-shadow" v-for="item in clusters">
             <cluster v-bind:ci="item"></cluster>
         </div>
-        <cluster></cluster>
         <div class="card mb-4 box-shadow">
             <div class="card-header">
                 <h4 class="my-0 font-weight-normal">kafka</h4>
