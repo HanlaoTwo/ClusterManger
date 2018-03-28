@@ -9,21 +9,21 @@ var demo = new Vue({
         clusters: [
             {
                 name: "kafka",
-                host_stat: [
+                host_stata: [
                     {host: 'hs01', state: "active"},
                     {host: 'hs02', state: "active"},
                     {host: 'hs03', state: "active"}]
             },
             {
                 name: "jstorm",
-                host_stat: [
+                host_stata: [
                     {host: 'hs04', state: "active"},
                     {host: 'hs05', state: "active"},
                     {host: 'hs06', state: "active"}]
             },
             {
                 name: "redis",
-                host_stat: [
+                host_stata: [
                     {host: 'hs07', state: "active"},
                     {host: 'hs08', state: "active"},
                     {host: 'hs09', state: "active"}]
@@ -39,7 +39,8 @@ var demo = new Vue({
                 url: baseUrl + '/getComps',
                 data: {},
                 success: function (data) {
-                    console.log(data)
+                    console.log(data);
+                    this.clusters = data
                 },
                 error: function () {
                     ins.gridData = [{host: 'hs02', state: "active"}]

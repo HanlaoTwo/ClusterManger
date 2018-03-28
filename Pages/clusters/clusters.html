@@ -22,6 +22,7 @@
     <div>
         <div class="card-header">
             <h4 class="my-0 font-weight-normal"> {{ ci.name }} </h4>
+            <button type="button" class="btn btn-default btn-xs" @click="fresh()">刷新状态</button>
         </div>
         <div class="card-body">
             <h3 class="card-title pricing-card-title">host
@@ -29,11 +30,10 @@
             </h3>
             <div id="s">
                 <ul class="list-unstyled mt-3 mb-4">
-                    <li v-for="item in ci.host_stata">
+                    <li v-for="item in host_stata">
                         {{ item.host }} {{item.state}}
                     </li>
                 </ul>
-                <button type="button" class="btn  btn-group-sm btn-outline-primary" @click="fresh()">刷新状态</button>
                 <button type="button" class="btn  btn-group-sm btn-outline-primary" @click="restart()">重启</button>
                 <button type="button" class="btn  btn-group-sm btn-outline-primary" @click="start()">启动</button>
                 <button type="button" class="btn  btn-group-sm btn-outline-primary" @click="stop()">停止</button>
@@ -66,7 +66,7 @@
         <div class="card mb-4 box-shadow" v-for="item in clusters">
             <cluster v-bind:ci="item"></cluster>
         </div>
-
+        <cluster></cluster>
         <div class="card mb-4 box-shadow">
             <div class="card-header">
                 <h4 class="my-0 font-weight-normal">kafka</h4>
